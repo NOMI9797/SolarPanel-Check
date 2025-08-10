@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { Sun, Zap, Shield, Globe, Search, ArrowRight, Battery, Filter } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sun, Zap, Shield, Globe, Search, ArrowRight, Battery, Filter, Info, HelpCircle, Star, CheckCircle } from 'lucide-react';
 import { solarBrands, SolarBrand } from '@/config/solarBrands';
 import SerialScanner from '@/components/SerialScanner';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'premium' | 'standard' | 'budget'>('all');
+  const [showHelp, setShowHelp] = useState(false);
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const handleBrandClick = (url: string, brandName: string) => {
     // Open in new tab
@@ -17,6 +20,33 @@ export default function Home() {
   const handleBrandDetected = (brand: SolarBrand) => {
     // Redirect to the brand's authentication page
     window.open(brand.url, '_blank', 'noopener,noreferrer');
+  };
+
+  // Generate search suggestions based on brands and features
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const suggestions: string[] = [];
+      solarBrands.forEach(brand => {
+        if (brand.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+          suggestions.push(brand.name);
+        }
+        brand.features.forEach(feature => {
+          if (feature.toLowerCase().includes(searchQuery.toLowerCase())) {
+            suggestions.push(feature);
+          }
+        });
+      });
+      setSearchSuggestions([...new Set(suggestions)].slice(0, 5));
+      setShowSuggestions(true);
+    } else {
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, [searchQuery]);
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setShowSuggestions(false);
   };
 
   const filteredBrands = solarBrands.filter(brand => {
@@ -30,16 +60,16 @@ export default function Home() {
   });
 
   const categories = [
-    { id: 'all', name: 'All Brands', count: solarBrands.length },
-    { id: 'premium', name: 'Premium', count: solarBrands.filter(b => b.category === 'premium').length },
-    { id: 'standard', name: 'Standard', count: solarBrands.filter(b => b.category === 'standard').length },
-    { id: 'budget', name: 'Budget', count: solarBrands.filter(b => b.category === 'budget').length }
+    { id: 'all', name: 'All Brands', count: solarBrands.length, icon: Globe, color: 'bg-blue-100 text-blue-800' },
+    { id: 'premium', name: 'Premium', count: solarBrands.filter(b => b.category === 'premium').length, icon: Star, color: 'bg-yellow-100 text-yellow-800' },
+    { id: 'standard', name: 'Standard', count: solarBrands.filter(b => b.category === 'standard').length, icon: Shield, color: 'bg-blue-100 text-blue-800' },
+    { id: 'budget', name: 'Budget', count: solarBrands.filter(b => b.category === 'budget').length, icon: Battery, color: 'bg-green-100 text-green-800' }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-md border-b border-green-200 sticky top-0 z-50 shadow-sm">
+      <header className="bg-white/95 backdrop-blur-md border-b border-green-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
@@ -52,6 +82,13 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setShowHelp(!showHelp)}
+                className="flex items-center space-x-2 text-sm text-gray-600 hover:text-green-600 transition-colors duration-200"
+              >
+                <HelpCircle className="h-4 w-4" />
+                <span className="hidden sm:inline">Help</span>
+              </button>
               <div className="hidden md:flex items-center space-x-2 text-sm text-gray-600">
                 <Shield className="h-4 w-4" />
                 <span>Secure Verification</span>
@@ -60,6 +97,27 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Help Tooltip */}
+      {showHelp && (
+        <div className="bg-blue-50 border-b border-blue-200 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Info className="h-5 w-5 text-blue-600" />
+              <p className="text-blue-800 text-sm">
+                <strong>How to use:</strong> Enter your solar panel serial number above, or browse brands below. 
+                Each brand card will take you to their official verification system.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowHelp(false)}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -73,10 +131,24 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Find Your Solar Panel Brand
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-6">
             Select your solar panel manufacturer below to access their official authentication 
             and barcode verification system. Get instant access to product information and warranty details.
           </p>
+          <div className="flex items-center justify-center space-x-6 text-sm text-gray-500">
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="h-4 w-4 text-green-500" />
+              <span>Instant Brand Detection</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Shield className="h-4 w-4 text-blue-500" />
+              <span>Official Verification</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Globe className="h-4 w-4 text-purple-500" />
+              <span>Global Brands</span>
+            </div>
+          </div>
         </div>
 
         {/* Serial Number Scanner */}
@@ -84,33 +156,65 @@ export default function Home() {
 
         {/* Search and Filter Section */}
         <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* Search Bar */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search for your solar panel brand..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm bg-white"
-              />
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Find Your Brand</h3>
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <Info className="h-4 w-4" />
+                <span>Search by name, features, or description</span>
+              </div>
             </div>
-            
-            {/* Category Filter */}
-            <div className="flex items-center space-x-2">
-              <Filter className="h-5 w-5 text-gray-400" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value as any)}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm bg-white"
-              >
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {category.name} ({category.count})
-                  </option>
-                ))}
-              </select>
+            <div className="flex flex-col lg:flex-row gap-4">
+              {/* Search Bar */}
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search for your solar panel brand..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => searchQuery.trim() && setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm bg-white"
+                />
+                
+                {/* Search Suggestions */}
+                {showSuggestions && searchSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+                    {searchSuggestions.map((suggestion, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors duration-150"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <Search className="h-4 w-4 text-gray-400" />
+                          <span className="text-gray-700">{suggestion}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Category Filter */}
+              <div className="flex items-center space-x-2">
+                <Filter className="h-5 w-5 text-gray-400" />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value as any)}
+                  className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm bg-white"
+                >
+                  {categories.map(category => {
+                    const IconComponent = category.icon;
+                    return (
+                      <option key={category.id} value={category.id}>
+                        {category.name} ({category.count})
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -118,7 +222,7 @@ export default function Home() {
         {/* Results Count */}
         <div className="text-center mb-6">
           <p className="text-gray-600">
-            Showing {filteredBrands.length} of {solarBrands.length} brands
+            Showing <span className="font-semibold text-gray-900">{filteredBrands.length}</span> of <span className="font-semibold text-gray-900">{solarBrands.length}</span> brands
           </p>
         </div>
 
@@ -136,31 +240,6 @@ export default function Home() {
               <div className="p-6 relative z-10">
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-4xl">{brand.logo}</div>
-                  <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600 transition-colors duration-300" />
-                </div>
-                
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {brand.name}
-                </h3>
-                
-                <p className="text-gray-600 text-sm mb-4">
-                  {brand.description}
-                </p>
-
-                {/* Features */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {brand.features.slice(0, 2).map((feature, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
-                    >
-                      {feature}
-                    </span>
-                  ))}
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Click to verify</span>
                   <div className="flex items-center space-x-2">
                     <div className={`px-2 py-1 text-xs font-medium rounded-full ${
                       brand.category === 'premium' ? 'bg-yellow-100 text-yellow-800' :
@@ -169,9 +248,37 @@ export default function Home() {
                     }`}>
                       {brand.category}
                     </div>
-                    <div className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                      Active
-                    </div>
+                    <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600 transition-colors duration-300" />
+                  </div>
+                </div>
+                
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {brand.name}
+                </h3>
+                
+                <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                  {brand.description}
+                </p>
+
+                {/* Features */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {brand.features.map((feature, index) => (
+                    <span
+                      key={index}
+                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full font-medium"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500 flex items-center space-x-1">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    <span>Click to verify</span>
+                  </span>
+                  <div className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                    Active
                   </div>
                 </div>
               </div>
@@ -181,12 +288,36 @@ export default function Home() {
 
         {/* No Results */}
         {filteredBrands.length === 0 && (
-          <div className="text-center py-12">
+          <div className="text-center py-12 bg-white rounded-xl shadow-lg border border-gray-100">
             <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No brands found</h3>
-            <p className="text-gray-600">
-              Try adjusting your search or filter criteria
+            <p className="text-gray-600 mb-4">
+              {searchQuery ? `No results found for "${searchQuery}"` : 'Try adjusting your search or filter criteria'}
             </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
+              >
+                Clear Filters
+              </button>
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200"
+                >
+                  Clear Search
+                </button>
+              )}
+            </div>
+            {searchQuery && (
+              <div className="mt-4 text-sm text-gray-500">
+                💡 Try searching for: <span className="font-medium">Longi</span>, <span className="font-medium">Canadian</span>, <span className="font-medium">Jinko</span>, or <span className="font-medium">ARM</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -197,24 +328,24 @@ export default function Home() {
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="p-3 bg-blue-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <div className="text-center group">
+              <div className="p-3 bg-blue-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
                 <Search className="h-8 w-8 text-blue-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Easy Access</h4>
               <p className="text-gray-600">Find your manufacturer's verification system in one click</p>
             </div>
             
-            <div className="text-center">
-              <div className="p-3 bg-green-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <div className="text-center group">
+              <div className="p-3 bg-green-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
                 <Shield className="h-8 w-8 text-green-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Secure Verification</h4>
               <p className="text-gray-600">Direct access to official authentication systems</p>
             </div>
             
-            <div className="text-center">
-              <div className="p-3 bg-yellow-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <div className="text-center group">
+              <div className="p-3 bg-yellow-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
                 <Globe className="h-8 w-8 text-yellow-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Global Brands</h4>
@@ -224,7 +355,7 @@ export default function Home() {
         </div>
 
         {/* Footer CTA */}
-        <div className="text-center">
+        <div className="text-center bg-white rounded-xl shadow-lg p-8 border border-gray-100">
           <p className="text-gray-600 mb-4">
             Can't find your brand? Contact us to add more manufacturers.
           </p>

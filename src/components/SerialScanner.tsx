@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, Camera, X, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
+import { Search, Camera, X, CheckCircle, AlertCircle, ArrowRight, Info, HelpCircle, Copy, Sparkles } from 'lucide-react';
 import { detectBrandFromSerial, getAllSerialPrefixes, SolarBrand } from '@/config/solarBrands';
 
 interface SerialScannerProps {
@@ -13,6 +13,8 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
   const [detectedBrand, setDetectedBrand] = useState<SolarBrand | null>(null);
   const [showPrefixes, setShowPrefixes] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
+  const [showTips, setShowTips] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (serialNumber.trim()) {
@@ -45,18 +47,54 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
     setDetectedBrand(null);
   };
 
+  const copySerial = () => {
+    navigator.clipboard.writeText(serialNumber);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const prefixes = getAllSerialPrefixes();
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
       <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">
-          🔍 Serial Number Scanner
-        </h3>
-        <p className="text-gray-600">
+        <div className="flex items-center justify-center space-x-3 mb-3">
+          <div className="p-2 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg">
+            <Search className="h-6 w-6 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900">
+            🔍 Serial Number Scanner
+          </h3>
+        </div>
+        <p className="text-gray-600 mb-3">
           Enter or scan your solar panel serial number to automatically detect the brand
         </p>
+        <button
+          onClick={() => setShowTips(!showTips)}
+          className="flex items-center space-x-2 text-sm text-green-600 hover:text-green-700 font-medium mx-auto"
+        >
+          <HelpCircle className="h-4 w-4" />
+          <span>{showTips ? 'Hide' : 'Show'} scanning tips</span>
+        </button>
       </div>
+
+      {/* Scanning Tips */}
+      {showTips && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="flex items-start space-x-3">
+            <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+            <div className="text-sm text-blue-800">
+              <p className="font-medium mb-2">💡 <strong>Where to find your serial number:</strong></p>
+              <ul className="space-y-1 ml-4">
+                <li>• On the back of your solar panel</li>
+                <li>• In your installation documentation</li>
+                <li>• On the inverter or monitoring system</li>
+                <li>• Usually starts with brand-specific letters (e.g., LR for Longi, CS for Canadian Solar)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Serial Number Input */}
       <div className="max-w-2xl mx-auto mb-6">
@@ -73,7 +111,8 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
             {serialNumber && (
               <button
                 onClick={clearSerial}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                title="Clear serial number"
               >
                 <X className="h-4 w-4 text-gray-400" />
               </button>
@@ -86,7 +125,7 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
             className={`px-6 py-4 rounded-lg font-medium transition-all duration-300 ${
               isScanning
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 shadow-lg'
+                : 'bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 shadow-lg hover:shadow-xl'
             }`}
           >
             {isScanning ? (
@@ -112,15 +151,24 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
               <CheckCircle className="h-6 w-6 text-green-600" />
               <div className="flex-1">
                 <h4 className="font-semibold text-green-900">
-                  Brand Detected: {detectedBrand.name}
+                  🎉 Brand Detected: {detectedBrand.name}
                 </h4>
-                <p className="text-green-700 text-sm">
-                  Serial number "{serialNumber}" matches {detectedBrand.name} patterns
+                <p className="text-green-700 text-sm mb-2">
+                  Serial number <span className="font-mono font-medium">"{serialNumber}"</span> matches {detectedBrand.name} patterns
                 </p>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={copySerial}
+                    className="flex items-center space-x-1 text-xs text-green-600 hover:text-green-700 font-medium"
+                  >
+                    <Copy className="h-3 w-3" />
+                    <span>{copied ? 'Copied!' : 'Copy serial'}</span>
+                  </button>
+                </div>
               </div>
               <button
                 onClick={handleSerialSubmit}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center space-x-2"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg"
               >
                 <span>Go to {detectedBrand.name}</span>
                 <ArrowRight className="h-4 w-4" />
@@ -140,9 +188,11 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
                 <h4 className="font-semibold text-yellow-900">
                   Brand Not Detected
                 </h4>
-                <p className="text-yellow-700 text-sm">
-                  Serial number "{serialNumber}" doesn't match any known brand patterns. 
-                  Try selecting from the brand list below.
+                <p className="text-yellow-700 text-sm mb-2">
+                  Serial number <span className="font-mono font-medium">"{serialNumber}"</span> doesn't match any known brand patterns.
+                </p>
+                <p className="text-yellow-600 text-xs">
+                  💡 Try selecting from the brand list below, or check if the serial number is entered correctly.
                 </p>
               </div>
             </div>
@@ -153,27 +203,38 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
       {/* Serial Number Prefixes Guide */}
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-lg font-semibold text-gray-900">
-            📋 Serial Number Prefixes Guide
-          </h4>
+          <div className="flex items-center space-x-2">
+            <h4 className="text-lg font-semibold text-gray-900">
+              📋 Serial Number Prefixes Guide
+            </h4>
+            <div className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
+              {prefixes.reduce((total, brand) => total + brand.prefixes.length, 0)} prefixes
+            </div>
+          </div>
           <button
             onClick={() => setShowPrefixes(!showPrefixes)}
-            className="text-green-600 hover:text-green-700 font-medium"
+            className="text-green-600 hover:text-green-700 font-medium flex items-center space-x-2"
           >
-            {showPrefixes ? 'Hide' : 'Show'} Prefixes
+            <span>{showPrefixes ? 'Hide' : 'Show'} Prefixes</span>
+            {showPrefixes ? <X className="h-4 w-4" /> : <Search className="h-4 w-4" />}
           </button>
         </div>
         
         {showPrefixes && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {prefixes.map((brandInfo) => (
-              <div key={brandInfo.brand} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <h5 className="font-semibold text-gray-900 mb-2">{brandInfo.brand}</h5>
+              <div key={brandInfo.brand} className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-300 transition-colors duration-200">
+                <h5 className="font-semibold text-gray-900 mb-2 flex items-center space-x-2">
+                  <span>{brandInfo.brand}</span>
+                  <span className="text-xs text-gray-500">({brandInfo.prefixes.length})</span>
+                </h5>
                 <div className="flex flex-wrap gap-2">
                   {brandInfo.prefixes.map((prefix) => (
                     <span
                       key={prefix}
-                      className="px-2 py-1 bg-white text-gray-700 text-xs rounded border border-gray-300 font-mono"
+                      className="px-2 py-1 bg-white text-gray-700 text-xs rounded border border-gray-300 font-mono hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+                      onClick={() => setSerialNumber(prefix + '2024DEMO')}
+                      title={`Click to test with ${prefix}2024DEMO`}
                     >
                       {prefix}
                     </span>
@@ -187,8 +248,9 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
 
       {/* Quick Examples */}
       <div className="max-w-4xl mx-auto mt-6">
-        <h4 className="text-lg font-semibold text-gray-900 mb-3">
-          💡 Quick Examples
+        <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center space-x-2">
+          <Sparkles className="h-5 w-5 text-yellow-500" />
+          <span>💡 Quick Examples</span>
         </h4>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
@@ -201,7 +263,7 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
             <button
               key={index}
               onClick={() => setSerialNumber(item.example)}
-              className="text-left p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors duration-200"
+              className="text-left p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-all duration-200 hover:border-gray-300 hover:shadow-sm"
             >
               <div className="font-mono text-sm text-gray-700 mb-1">{item.example}</div>
               <div className="text-xs text-gray-500">{item.brand}</div>
