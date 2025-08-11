@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Panel Hub - Icon Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .icon-preview {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        .icon-preview img {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .download-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .download-btn:hover {
+            background: #059669;
+        }
+        .instructions {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌞 Solar Panel Hub - PWA Icon Generator</h1>
+        
+        <div class="instructions">
+            <h3>📋 Instructions:</h3>
+            <ol>
+                <li>Right-click on each icon below</li>
+                <li>Select "Save image as..."</li>
+                <li>Save with the correct filename (e.g., "icon-192x192.png")</li>
+                <li>Place all icons in the <code>/public/icons/</code> folder</li>
+            </ol>
+        </div>
+
+        <h2>🎨 Generated Icons:</h2>
+        <div class="icon-grid">
+            <div class="icon-preview">
+                <h4>16x16 (Favicon)</h4>
+                <canvas id="icon16" width="16" height="16"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(16, 16)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>32x32</h4>
+                <canvas id="icon32" width="32" height="32"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(32, 32)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>72x72</h4>
+                <canvas id="icon72" width="72" height="72"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(72, 72)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>96x96</h4>
+                <canvas id="icon96" width="96" height="96"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(96, 96)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>128x128</h4>
+                <canvas id="icon128" width="128" height="128"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(128, 128)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>144x144</h4>
+                <canvas id="icon144" width="144" height="144"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(144, 144)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>152x152</h4>
+                <canvas id="icon152" width="152" height="152"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(152, 152)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>192x192</h4>
+                <canvas id="icon192" width="192" height="192"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(192, 192)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>384x384</h4>
+                <canvas id="icon384" width="384" height="384"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(384, 384)">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>512x512</h4>
+                <canvas id="icon512" width="512" height="512"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(512, 512)">Download</button>
+            </div>
+        </div>
+
+        <h2>🍎 Apple Touch Icon (180x180):</h2>
+        <div class="icon-preview">
+            <canvas id="appleIcon" width="180" height="180"></canvas>
+            <br>
+            <button class="download-btn" onclick="downloadIcon(180, 180, 'apple-touch-icon')">Download</button>
+        </div>
+
+        <h2>📱 Favicon Icons:</h2>
+        <div class="icon-grid">
+            <div class="icon-preview">
+                <h4>Favicon 16x16</h4>
+                <canvas id="favicon16" width="16" height="16"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(16, 16, 'favicon-16x16')">Download</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>Favicon 32x32</h4>
+                <canvas id="favicon32" width="32" height="32"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(32, 32, 'favicon-32x32')">Download</button>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>✅ After Downloading:</h3>
+            <ol>
+                <li>Create folder: <code>/public/icons/</code></li>
+                <li>Save all icons there with correct names</li>
+                <li>Your PWA will be fully installable!</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Generate all icons
+        const sizes = [16, 32, 72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function generateIcon(size) {
+            const canvas = document.getElementById(`icon${size}`);
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#10b981');
+            gradient.addColorStop(1, '#3b82f6');
+            
+            // Draw background circle
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2 - 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw white border
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = Math.max(1, size/64);
+            ctx.stroke();
+            
+            // Draw solar panel grid (simplified for small sizes)
+            if (size >= 32) {
+                const panelSize = Math.max(2, size/16);
+                const spacing = Math.max(1, size/32);
+                const startX = size/4;
+                const startY = size/4;
+                
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.strokeStyle = '#e5e7eb';
+                ctx.lineWidth = Math.max(1, size/256);
+                
+                for (let row = 0; row < 3; row++) {
+                    for (let col = 0; col < 3; col++) {
+                        const x = startX + col * (panelSize + spacing);
+                        const y = startY + row * (panelSize + spacing);
+                        
+                        ctx.fillRect(x, y, panelSize, panelSize);
+                        ctx.strokeRect(x, y, panelSize, panelSize);
+                    }
+                }
+            }
+            
+            // Draw center sun
+            if (size >= 16) {
+                const sunRadius = Math.max(2, size/16);
+                ctx.fillStyle = '#fbbf24';
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, sunRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw hub indicator
+                const hubRadius = Math.max(1, size/32);
+                ctx.fillStyle = '#10b981';
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, hubRadius, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+        
+        function generateAppleIcon() {
+            const canvas = document.getElementById('appleIcon');
+            const ctx = canvas.getContext('2d');
+            const size = 180;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#10b981');
+            gradient.addColorStop(1, '#3b82f6');
+            
+            // Draw rounded rectangle background
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, 40);
+            ctx.fill();
+            
+            // Draw solar panel grid
+            const panelSize = size/12;
+            const spacing = size/36;
+            const startX = size/6;
+            const startY = size/6;
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.strokeStyle = '#e5e7eb';
+            ctx.lineWidth = 2;
+            
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    const x = startX + col * (panelSize + spacing);
+                    const y = startY + row * (panelSize + spacing);
+                    
+                    ctx.fillRect(x, y, panelSize, panelSize);
+                    ctx.strokeRect(x, y, panelSize, panelSize);
+                }
+            }
+            
+            // Draw center sun
+            const sunRadius = size/12;
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, sunRadius, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw hub indicator
+            const hubRadius = size/24;
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, hubRadius, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        function generateFavicon(size) {
+            const canvas = document.getElementById(`favicon${size}`);
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#10b981');
+            gradient.addColorStop(1, '#3b82f6');
+            
+            // Draw background circle
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2 - 1, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw center sun
+            const sunRadius = Math.max(1, size/8);
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, sunRadius, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        function downloadIcon(width, height, prefix = 'icon') {
+            const canvas = document.getElementById(`${prefix}${width}`) || document.getElementById(`icon${width}`);
+            const link = document.createElement('a');
+            link.download = `${prefix}-${width}x${height}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Generate all icons when page loads
+        window.onload = function() {
+            sizes.forEach(size => generateIcon(size));
+            generateAppleIcon();
+            generateFavicon(16);
+            generateFavicon(32);
+        };
+        
+        // Add roundRect polyfill for older browsers
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+    </script>
+</body>
+</html> 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Sun, Zap, Shield, Globe, Search, ArrowRight, Battery, Filter, Info, HelpCircle, Star, CheckCircle } from 'lucide-react';
 import { solarBrands, SolarBrand } from '@/config/solarBrands';
 import SerialScanner from '@/components/SerialScanner';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -378,6 +379,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
     </div>
   );
 }
