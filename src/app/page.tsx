@@ -79,7 +79,8 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-lg sm:text-xl font-bold text-gray-900">Solar Panel Hub</h1>
-                <p className="text-xs sm:text-sm text-gray-600">Authentication & Information Center</p>
+                <p className="text-xs sm:text-sm text-gray-600">by Subhan Tubewell and Solar</p>
+                <p className="text-xs sm:text-sm text-gray-500">Authentication & Information Center</p>
               </div>
             </div>
             <div className="flex items-center space-x-3 sm:space-x-4">
@@ -98,6 +99,56 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Professional Greeting & Brand Showcase */}
+      <div className="bg-gradient-to-r from-green-600 via-blue-600 to-green-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="text-center">
+            {/* Personal Greeting */}
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
+                🌟 Welcome, Ahmed Khan 🌟
+              </h2>
+              <p className="text-green-100 text-base sm:text-lg max-w-2xl mx-auto">
+                Thank you for inspiring us to create innovative solutions for the solar industry. 
+                Your vision drives us forward in building a sustainable future.
+              </p>
+            </div>
+            
+            {/* Brand Showcase */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20">
+              <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-white/20 rounded-full">
+                    <Sun className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg sm:text-xl font-bold">Subhan Tubewell and Solar</h3>
+                    <p className="text-green-100 text-sm">Your Trusted Solar Partner</p>
+                  </div>
+                </div>
+                
+                <div className="hidden sm:block w-px h-12 bg-white/30"></div>
+                
+                <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-4 w-4 text-green-300" />
+                    <span>Premium Quality</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Shield className="h-4 w-4 text-blue-300" />
+                    <span>Certified Products</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Globe className="h-4 w-4 text-purple-300" />
+                    <span>Global Standards</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Help Tooltip */}
       {showHelp && (
@@ -371,11 +422,25 @@ export default function Home() {
             <Sun className="h-5 w-5 sm:h-6 sm:w-6 text-green-400" />
             <span className="text-base sm:text-lg font-semibold">Solar Panel Hub</span>
           </div>
+          
+          {/* Brand Showcase in Footer */}
+          <div className="mb-4 sm:mb-6">
+            <div className="inline-flex items-center space-x-2 bg-white/10 rounded-full px-4 py-2 mb-3">
+              <Star className="h-4 w-4 text-yellow-400" />
+              <span className="text-sm font-medium text-green-300">Powered by</span>
+              <span className="text-sm font-bold text-white">Subhan Tubewell and Solar</span>
+            </div>
+            <p className="text-gray-300 text-sm">
+              Your trusted partner in solar solutions and innovation
+            </p>
+          </div>
+          
           <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">
             Your trusted source for solar panel authentication and verification
           </p>
+          
           <div className="text-xs text-gray-500">
-            © 2024 Solar Panel Hub. All rights reserved.
+            © 2024 Solar Panel Hub by Subhan Tubewell and Solar. All rights reserved.
           </div>
         </div>
       </footer>
