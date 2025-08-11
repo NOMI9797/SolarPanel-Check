@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, Camera, X, CheckCircle, AlertCircle, ArrowRight, Info, HelpCircle, Copy, Sparkles } from 'lucide-react';
+import { Search, X, CheckCircle, AlertCircle, ArrowRight, Info, HelpCircle, Copy, Sparkles } from 'lucide-react';
 import { detectBrandFromSerial, getAllSerialPrefixes, SolarBrand } from '@/config/solarBrands';
 
 interface SerialScannerProps {
@@ -12,7 +12,6 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
   const [serialNumber, setSerialNumber] = useState('');
   const [detectedBrand, setDetectedBrand] = useState<SolarBrand | null>(null);
   const [showPrefixes, setShowPrefixes] = useState(false);
-  const [isScanning, setIsScanning] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -29,17 +28,6 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
     if (detectedBrand) {
       onBrandDetected(detectedBrand);
     }
-  };
-
-  const handleScanClick = () => {
-    setIsScanning(true);
-    // Simulate scanning - in a real app, this would integrate with camera API
-    setTimeout(() => {
-      setIsScanning(false);
-      // For demo purposes, let's simulate a detected serial
-      const demoSerial = 'LR2024ABC123';
-      setSerialNumber(demoSerial);
-    }, 2000);
   };
 
   const clearSerial = () => {
@@ -63,22 +51,22 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
             <Search className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
-            🔍 Serial Number Scanner
+            🔍 Serial Number Detector
           </h3>
         </div>
         <p className="text-gray-600 mb-3 text-xs sm:text-sm lg:text-base px-4">
-          Enter or scan your solar panel serial number to automatically detect the brand
+          Enter your solar panel serial number to automatically detect the brand
         </p>
         <button
           onClick={() => setShowTips(!showTips)}
           className="flex items-center space-x-2 text-sm text-green-600 hover:text-green-700 font-medium mx-auto px-3 py-2 rounded-lg hover:bg-green-50 transition-colors duration-200 active:bg-green-100"
         >
           <HelpCircle className="h-4 w-4" />
-          <span>{showTips ? 'Hide' : 'Show'} scanning tips</span>
+          <span>{showTips ? 'Hide' : 'Show'} serial number tips</span>
         </button>
       </div>
 
-      {/* Scanning Tips */}
+      {/* Serial Number Tips */}
       {showTips && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4 mb-6">
           <div className="flex items-start space-x-3">
@@ -98,48 +86,24 @@ export default function SerialScanner({ onBrandDetected }: SerialScannerProps) {
 
       {/* Serial Number Input */}
       <div className="max-w-2xl mx-auto mb-6">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Enter serial number (e.g., LR2024ABC123)"
-              value={serialNumber}
-              onChange={(e) => setSerialNumber(e.target.value)}
-              className="w-full pl-10 pr-12 py-3 sm:py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm bg-white text-base sm:text-lg"
-            />
-            {serialNumber && (
-              <button
-                onClick={clearSerial}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                title="Clear serial number"
-              >
-                <X className="h-4 w-4 text-gray-400" />
-              </button>
-            )}
-          </div>
-          
-          <button
-            onClick={handleScanClick}
-            disabled={isScanning}
-            className={`px-4 sm:px-6 py-3 sm:py-4 rounded-lg font-medium transition-all duration-300 text-sm sm:text-base ${
-              isScanning
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 shadow-lg hover:shadow-xl active:scale-95'
-            }`}
-          >
-            {isScanning ? (
-              <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                <span>Scanning...</span>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Camera className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span>Scan</span>
-              </div>
-            )}
-          </button>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Enter serial number to detect brand..."
+            value={serialNumber}
+            onChange={(e) => setSerialNumber(e.target.value)}
+            className="w-full pl-10 pr-12 py-3 sm:py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm bg-white text-base sm:text-lg"
+          />
+          {serialNumber && (
+            <button
+              onClick={clearSerial}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              title="Clear serial number"
+            >
+              <X className="h-4 w-4 text-gray-400" />
+            </button>
+          )}
         </div>
       </div>
 
